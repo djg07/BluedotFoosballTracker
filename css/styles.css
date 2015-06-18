@@ -1,0 +1,21 @@
+/**
+ * Created by dtp on 6/17/2015.
+ */
+
+
+
+#controls {
+    text-align:center;
+    margin-top:10px;
+}
+
+.score {
+    text-align:center;
+}
+
+#statsContainer {
+    margin-top:10px;
+    height:200px;
+    background-color:lightsteelblue;
+    text-align:center;
+}
