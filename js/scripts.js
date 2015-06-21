@@ -4,9 +4,9 @@
 
 $(function() {
 
-    var allPlayers = ["Daniel", "Steve", "Matt", "Adriano"]; //get request here for player ids
-    var availablePlayers = ["Daniel", "Steve", "Matt", "Adriano"];
-    var rootURL = "http://firestone.gyges.feralhosting.com/foosball/";
+    var allPlayers = ["daniel", "steve", "matt", "adriano"]; //get request here for player ids
+    var availablePlayers = ["daniel", "steve", "matt", "adriano"];
+
 
     var red1 = $('#red1');
     var red2 = $('#red2');
@@ -17,8 +17,8 @@ $(function() {
 
     function resetPlayers() {
         (function() {//resets player input boxes
-            var allPlayers = ["Daniel", "Steve", "Matt", "Adriano"];
-            var availablePlayers = ["Daniel", "Steve", "Matt", "Adriano"];
+            var allPlayers = ["daniel", "steve", "matt", "adriano"];
+            var availablePlayers = ["daniel", "steve", "matt", "adriano"];
 
             for (var p=0; p < optionBoxes.length; p++) {
                 optionBoxes[p].find('option').remove();
@@ -112,7 +112,19 @@ $(function() {
     })
 
     $('#submit').click(function() {
-        debugger;
+
+        //$.ajax({
+        //    type: "GET",
+        //    dataType: 'json',
+        //    url: 'http://firestone.gyges.feralhosting.com/foosball/stats',
+        //    crossDomain: true
+        //}).done(function(data) {
+        //    console.log(data);
+        //}).fail(function(xhr, text, error) {
+        //    console.log(xhr.responseText);
+        //    console.log(tex);
+        //})
+
         var blackPlayers = getBlackPlayers();
         var redPlayers = getRedPlayers();
         var redTeamPresent = redPlayers.length > 0;
@@ -120,14 +132,41 @@ $(function() {
         var blackScore = $('#blackScore').val();
         var redScore = $('#redScore').val();
         var rootURL = "http://firestone.gyges.feralhosting.com/foosball/";
-
-        var gameDetailsURL = 'game?side1=';
-
+        //console.log(blackPlayers[0]);
+        //var rootURL = "http://firestone.gyges.feralhosting.com/";
+        var gameDetailsURL = 'foosball/game?side1=' + '"' + redPlayers[0] + '(red):' + redScore + '"&side2=' + '"' + blackPlayers[0] + '(black):' + blackScore + '"'
 
         var failMsg = "Submit Failed."
         if ((!redTeamPresent) || !(blackTeamPresent)) {
             alert(failMsg + '\nEach team must have atleast one player!');
         }
+        var d = {
+            //game: {
+            //    side1: redPlayers[0] + '(red):' + redScore,
+            //    side2: blackPlayers[0] + '(black):' + redScore
+            //}
+
+            side1: '"Daniel(red):5"',
+            side2: '"adriano(black):2"'
+
+        }
+
+        $.ajax({
+            url: "http://firestone.gyges.feralhosting.com/foosball/game?",
+            type: "POST",
+            data: d,
+            success: function(data, textStatus, jqXHR) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(jqXHR);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+
+        })
 
 
 
