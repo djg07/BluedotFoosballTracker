@@ -4,34 +4,46 @@
 
 $(function() {
 
-    var allPlayers = ["daniel", "steve", "matt", "adriano"]; //get request here for player ids
-    var availablePlayers = ["daniel", "steve", "matt", "adriano"];
 
 
+
+    //var allPlayers = ["daniel", "steve", "matt", "adriano"]; //get request here for player ids
+    //var availablePlayers = ["daniel", "steve", "matt", "adriano"];
+
+    var allPlayers;
+    var availablePlayers;
     var red1 = $('#red1');
     var red2 = $('#red2');
     var black1 = $('#black1');
     var black2 = $('#black2');
-
     var optionBoxes = [red1, red2, black1, black2];
+    resetAll();
+
 
     function resetPlayers() {
         (function() {//resets player input boxes
-            var allPlayers = ["daniel", "steve", "matt", "adriano"];
-            var availablePlayers = ["daniel", "steve", "matt", "adriano"];
-
-            for (var p=0; p < optionBoxes.length; p++) {
-                optionBoxes[p].find('option').remove();
-            }
-
-            for (var j=0; j < optionBoxes.length; j++)
-            {
-                optionBoxes[j].append($('<option></option>').val('').html(''));
-                for (var k=0; k < allPlayers.length; k++) {
-                    optionBoxes[j].append($('<option></option>').val(allPlayers[k]).html(allPlayers[k]));
+            $.ajax({
+                url: "http://firestone.gyges.feralhosting.com/foosball/players",
+                type: "GET",
+                success: function(data) {
+                    //do something
+                    console.log(data.players);
+                    allPlayers = data.players;
+                    availablePlayers = data.players;
                 }
-            }
+            }).done(function() {
+                for (var p=0; p < optionBoxes.length; p++) {
+                    optionBoxes[p].find('option').remove();
+                }
 
+                for (var j=0; j < optionBoxes.length; j++)
+                {
+                    optionBoxes[j].append($('<option></option>').val('').html(''));
+                    for (var k=0; k < allPlayers.length; k++) {
+                        optionBoxes[j].append($('<option></option>').val(allPlayers[k]).html(allPlayers[k]));
+                    }
+                }
+            });
         })()
     }
 
@@ -45,6 +57,12 @@ $(function() {
     function resetStats() { //TODO - Reset stats grid
         (function() {
         })();
+    }
+
+    function resetAll() {
+        resetPlayers();
+        resetScore();
+        resetStats;
     }
 
     function getRedPlayers() {
@@ -74,8 +92,8 @@ $(function() {
 
 
 
-    resetPlayers();
-    $('.score').find('input').val(0);
+
+
     $(".players").change(function(e) {
         console.log(e.target.value);
         //debugger;
@@ -134,27 +152,18 @@ $(function() {
         var rootURL = "http://firestone.gyges.feralhosting.com/foosball/";
         //console.log(blackPlayers[0]);
         //var rootURL = "http://firestone.gyges.feralhosting.com/";
-        var gameDetailsURL = 'foosball/game?side1=' + '"' + redPlayers[0] + '(red):' + redScore + '"&side2=' + '"' + blackPlayers[0] + '(black):' + blackScore + '"'
+        var gameDetailsURL = 'side1=' + redPlayers[0] + '(red):' + redScore + '&side2='+ blackPlayers[0] + '(black):' + blackScore;
 
         var failMsg = "Submit Failed."
         if ((!redTeamPresent) || !(blackTeamPresent)) {
             alert(failMsg + '\nEach team must have atleast one player!');
-        }
-        var d = {
-            //game: {
-            //    side1: redPlayers[0] + '(red):' + redScore,
-            //    side2: blackPlayers[0] + '(black):' + redScore
-            //}
-
-            side1: '"Daniel(red):5"',
-            side2: '"adriano(black):2"'
-
+            return;
         }
 
         $.ajax({
             url: "http://firestone.gyges.feralhosting.com/foosball/game?",
             type: "POST",
-            data: d,
+            data: gameDetailsURL,
             success: function(data, textStatus, jqXHR) {
                 console.log(data);
                 console.log(textStatus);
@@ -167,6 +176,7 @@ $(function() {
             }
 
         })
+
 
 
 
