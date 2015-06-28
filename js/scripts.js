@@ -28,7 +28,7 @@ $(function() {
                 type: "GET",
                 success: function(data) {
                     //do something
-//                    console.log(data);
+                    console.log(data);
                     var data = data.allStats;
                     for (var x = 0; x < data.length; x++) {
                         var player = {};
@@ -98,7 +98,7 @@ $(function() {
     function getRedPlayers() {
         var redPlayers = [];
         for (var j = 0; j < optionBoxes.length; j++) {
-            optBoxStr = optionBoxes[j].selector
+            var optBoxStr = optionBoxes[j].selector
 
             if ((optBoxStr.indexOf('red') === 1) && (optionBoxes[j].val().length > 0)) {
                 redPlayers.push(optionBoxes[j].val());
@@ -110,7 +110,8 @@ $(function() {
     function getBlackPlayers() {
         var blackPlayers = [];
         for (var j = 0; j < optionBoxes.length; j++) {
-            optBoxStr = optionBoxes[j].selector
+            console.log(optionBoxes)
+            var optBoxStr = optionBoxes[j].selector
 
             if ((optBoxStr.indexOf('black') === 1) && (optionBoxes[j].val().length > 0)) {
                 blackPlayers.push(optionBoxes[j].val());
@@ -170,13 +171,33 @@ $(function() {
         var rootURL = "http://firestone.gyges.feralhosting.com/foosball/";
         //console.log(blackPlayers[0]);
         //var rootURL = "http://firestone.gyges.feralhosting.com/";
-        var gameDetailsURL = 'side1=' + redPlayers[0] + '(red):' + redScore + '&side2='+ blackPlayers[0] + '(black):' + blackScore;
-
+        
         var failMsg = "Submit Failed."
         if ((!redTeamPresent) || !(blackTeamPresent)) {
             alert(failMsg + '\nEach team must have atleast one player!');
             return;
         }
+        
+        if ((blackPlayers.length == 1) && (redPlayers.length == 1)) {
+            alert('1vs1');
+            return;
+            OneVsOne();
+        } 
+        if ((blackPlayers.length == 2) && (redPlayers.length == 2)){
+            alert('2vs2')
+            TwoVsTwo()
+        } else {
+            alert(failMsg);
+            return;
+        }
+        
+        
+        
+        
+        function OneVsOne() {
+            var gameDetailsURL = 'side1=' + redPlayers[0] + '(red):' + redScore + '&side2='+ blackPlayers[0] + '(black):' + blackScore;
+
+        
 
         $.ajax({
             url: "http://firestone.gyges.feralhosting.com/foosball/game?",
@@ -193,7 +214,41 @@ $(function() {
                 console.log(errorThrown);
             }
 
+        })    
+        }
+        
+        function TwoVsTwo() {
+            // " == %22
+            // & == %26
+            var gameDetailsURL = 'side1=' + redPlayers[0] + '%28redO%29' +
+                '%2B' + redPlayers[1] + '%28redD%29:' + redScore + "&" +
+                
+                'side2=' + blackPlayers[0] + '%28blackO%29' + '%2B' +
+                blackPlayers[1] + '%28blackD%29:' + blackScore
+            
+            console.log(gameDetailsURL);
+            
+            $.ajax({
+            url: "http://firestone.gyges.feralhosting.com/foosball/game?",
+            type: "POST",
+            data: gameDetailsURL,
+            success: function(data, textStatus, jqXHR) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(jqXHR);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+
         })
+            
+            
+            
+        }
+        
     })
 
     //d3 visualization
@@ -204,23 +259,62 @@ $(function() {
         var svgHeight = 400;
         //SDEA
         //console.log(playerStats)
+       
+        
+        //////////
+        
+        
+        
+        
+        
+        //MAIN CONTAINER
         d3.select('#statsContainer')
             .append('svg')
             .attr('id', 'mainStats')
             .attr('height', 0)
             .attr('width', 0)
-            .style('background-color', 'lightgrey')
+            //.style('background-color', 'lightgrey')
             .transition()
             .duration(200)
             .attr('height', svgHeight)
             .attr('width', svgWidth)    
         
-            d3.select('#mainStats')
-            .selectAll('rect')
+        //BACKGROUND GRID ANIMATION
+         d3.select('#mainStats')
+            .selectAll("rect")
+            .data([1, 2, 3, 4, 5, 6, 7, 8, 8,7,6,5,4,3,2,1,1,2,3,4,5,6,7,8,8,7,6,5,4,3,2,1])
+            .enter().append('rect')
+            .attr('id', 'trans')
+            .attr('width', '100')
+            .attr('height', '100')
+            .attr('x', function(d, i){
+    //            alert(d)
+               return (d-1)*100 
+             })
+            .attr('y', function(d,i){
+//                alert(Math.floor((i/3))*100)
+                return Math.floor((i/8))*100
+
+             })
+             .attr("opacity",0)
+            .style('stroke', 'white' )
+            .attr('fill', 'black')
+            .transition()
+            .delay(function(d,i) {
+                return i*50
+            })
+
+            .duration(1000)
+
+            .attr("opacity",1)  
+        
+        d3.select('#mainStats')
+            .selectAll('.bar')
             .data(playerStats)
             .enter()
             
             .append('rect')
+            .attr('class', 'bar')
             .attr('width', 150)
             .attr('height', function(d,i) {
             
@@ -238,7 +332,7 @@ $(function() {
             .attr('y', svgHeight)
             .transition()
             .delay(function(d,i) {
-                return 500
+                return 2000
             })
             .duration(500)
             
@@ -273,6 +367,6 @@ $(function() {
                     var temp = temp/2
                     return topPos + temp
                 })
-            },1000)
+            },2500)
     }
 });
