@@ -2,6 +2,8 @@
  * Created by dtp on 6/17/2015.
  */
 
+var d3;
+
 $(function() {
 
 
@@ -9,7 +11,7 @@ $(function() {
 
     //var allPlayers = ["daniel", "steve", "matt", "adriano"]; //get request here for player ids
     //var availablePlayers = ["daniel", "steve", "matt", "adriano"];
-
+    'use strict'
     var allPlayers;
     var availablePlayers;
     var red1 = $('#red1');
@@ -19,7 +21,47 @@ $(function() {
     var optionBoxes = [red1, red2, black1, black2];
     resetAll();
 
+    var playerStats = [];
 
+    
+    function getTotalStats() {
+        
+            $.ajax({
+                url: "http://firestone.gyges.feralhosting.com/foosball/stats",
+                type: "GET",
+                success: function(data) {
+                    //do something
+//                    console.log(data);
+                    var data = data.allStats;
+                    for (var x = 0; x < data.length; x++) {
+                        var player = {};
+                        
+                        player.name = data[x].player;
+                        player.stats = data[x].stats[0].categoryStats
+                        
+                        playerStats.push(player);
+                        
+                        
+                        
+                        
+                        
+                    }
+                    d3.drawViz();
+                    
+                    
+                    
+                },
+                error: function() {
+                    alert('error')
+                }
+                
+            
+            
+        })
+    }
+         
+    
+    
     function resetPlayers() {
         (function() {//resets player input boxes
             $.ajax({
@@ -123,6 +165,13 @@ $(function() {
 
     });
 
+        
+    $('#stats').click(function() {
+        getTotalStats();
+        
+    })    
+    
+        
     $('#reset').click(function() {
         resetPlayers();
         resetScore();
@@ -176,17 +225,62 @@ $(function() {
             }
 
         })
-
-
-
-
-
-
-
-
     })
 
 
+    
+    //d3 visualization
+    
+    d3.drawViz = function() {
+        var colorList = ['#FF0000', '#00CC00', '#0000FF', '#FFFF00']
+        var svgWidth = 800;
+        var svgHeight = 400;
+        //SDEA
+        console.log(playerStats)
+        d3.select('#statsContainer')
+            .append('svg')
+            .attr('height', 0)
+            .attr('width', 0)
+            .style('background-color', 'lightgrey')
+            .transition()
+            .duration(200)
+            .attr('height', svgHeight)
+            .attr('width', svgWidth)    
+        
+            d3.select('svg')
+            .selectAll('rect')
+            .data(playerStats)
+            .enter()
+            
+            .append('rect')
+            .attr('width', 150)
+            .attr('height', function(d,i) {
+            
+            return d.stats.wins / d.stats.losses *100
+            
+        })
+            
+            .attr('x', (function(d,i) {
+            return i*180 + 55 
+        }))
+            
+            .attr('fill', function(d,i) {
+            return colorList[i]
+        })
+            .attr('y', svgHeight)
+            .transition()
+            .delay(function(d,i) {
+                return i*500
+            })
+            .duration(500)
+            
+            .ease('cubic-in-out')
+            .attr('y', function(d,i) {
+            return svgHeight - (d.stats.wins/d.stats.losses*100)   
+        })
+            
+            
+    }
 
 
 
