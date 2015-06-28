@@ -236,7 +236,7 @@ $(function() {
         var svgWidth = 800;
         var svgHeight = 400;
         //SDEA
-        console.log(playerStats)
+        //console.log(playerStats)
         d3.select('#statsContainer')
             .append('svg')
             .attr('height', 0)
@@ -270,7 +270,7 @@ $(function() {
             .attr('y', svgHeight)
             .transition()
             .delay(function(d,i) {
-                return i*500
+                return 500
             })
             .duration(500)
             
@@ -279,7 +279,34 @@ $(function() {
             return svgHeight - (d.stats.wins/d.stats.losses*100)   
         })
             
+            //TEXT LABELS
+            d3.select('svg')
             
+            .selectAll('text')
+            .data(playerStats)
+            .enter()
+            .append('text')
+            
+            
+            .attr('fill', 'white')
+            .html(function(d,i){
+                 
+                return d.name.charAt(0).toUpperCase() + d.name.slice(1);
+            })
+            .attr('x', (function(d,i) {
+                
+                var textwidth = $(this).width()
+            return (i*180 + 55) + 75 -textwidth/2
+        }))            
+            .attr('y', function(d,i) {
+                var topPos = (svgHeight - (d.stats.wins/d.stats.losses*100))
+                var temp = svgHeight - topPos;
+                var temp = temp/2
+                return topPos + temp
+            })
+            
+            
+
     }
 
 
