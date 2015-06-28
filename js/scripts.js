@@ -254,7 +254,11 @@ $(function() {
     //d3 visualization
     
     d3.drawViz = function() {
-        var colorList = ['#FF0000', '#00CC00', '#0000FF', '#A30052']
+//        var colorList = ['#FF0000', '#00CC00', '#0000FF', '#A30052']
+//        var colorList = ['#b3e2cd', '#fdcdac', '#cbd5e8', '#f4cae4']
+          var colorList = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3']
+
+
         var svgWidth = 800;
         var svgHeight = 400;
         //SDEA
