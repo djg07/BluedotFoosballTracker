@@ -3,6 +3,23 @@
  */
 
 
+h2 {
+    font-family:  'Open Sans Condensed', sans-serif;
+    font-weight: 700
+    
+}
+
+button {
+    font-family: 'Roboto', sans-serif;
+    
+}
+
+input {
+    font-family: 'Roboto', sans-serif;
+    
+}
+
+
 
 #controls {
     text-align:center;
@@ -19,3 +36,12 @@
     background-color:lightsteelblue;
     text-align:center;
 }
+
+.form-group {
+    font-family:  'Roboto', sans-serif;
+}
+
+.userLabel {
+    font-family:  'Roboto', sans-serif;
+}
+

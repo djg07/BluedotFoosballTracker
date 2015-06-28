@@ -6,9 +6,6 @@ var d3;
 
 $(function() {
 
-
-
-
     //var allPlayers = ["daniel", "steve", "matt", "adriano"]; //get request here for player ids
     //var availablePlayers = ["daniel", "steve", "matt", "adriano"];
     'use strict'
@@ -39,29 +36,18 @@ $(function() {
                         player.name = data[x].player;
                         player.stats = data[x].stats[0].categoryStats
                         
-                        playerStats.push(player);
-                        
-                        
-                        
-                        
+                        playerStats.push(player);     
                         
                     }
                     d3.drawViz();
-                    
-                    
                     
                 },
                 error: function() {
                     alert('error')
                 }
-                
-            
-            
         })
     }
          
-    
-    
     function resetPlayers() {
         (function() {//resets player input boxes
             $.ajax({
@@ -95,9 +81,11 @@ $(function() {
         })();
     }
 
-
     function resetStats() { //TODO - Reset stats grid
         (function() {
+            
+            $('#mainStats').remove();
+            playerStats = []
         })();
     }
 
@@ -131,11 +119,6 @@ $(function() {
         return blackPlayers;
     }
 
-
-
-
-
-
     $(".players").change(function(e) {
         console.log(e.target.value);
         //debugger;
@@ -158,11 +141,8 @@ $(function() {
         //if current target == adriano, steve, matt, daniel
         //get person, add them back to others
 
+        //TODO
         //section to add back players to list
-
-
-
-
     });
 
         
@@ -175,22 +155,11 @@ $(function() {
     $('#reset').click(function() {
         resetPlayers();
         resetScore();
+        resetStats()
 
     })
 
     $('#submit').click(function() {
-
-        //$.ajax({
-        //    type: "GET",
-        //    dataType: 'json',
-        //    url: 'http://firestone.gyges.feralhosting.com/foosball/stats',
-        //    crossDomain: true
-        //}).done(function(data) {
-        //    console.log(data);
-        //}).fail(function(xhr, text, error) {
-        //    console.log(xhr.responseText);
-        //    console.log(tex);
-        //})
 
         var blackPlayers = getBlackPlayers();
         var redPlayers = getRedPlayers();
@@ -227,18 +196,17 @@ $(function() {
         })
     })
 
-
-    
     //d3 visualization
     
     d3.drawViz = function() {
-        var colorList = ['#FF0000', '#00CC00', '#0000FF', '#FFFF00']
+        var colorList = ['#FF0000', '#00CC00', '#0000FF', '#A30052']
         var svgWidth = 800;
         var svgHeight = 400;
         //SDEA
         //console.log(playerStats)
         d3.select('#statsContainer')
             .append('svg')
+            .attr('id', 'mainStats')
             .attr('height', 0)
             .attr('width', 0)
             .style('background-color', 'lightgrey')
@@ -247,7 +215,7 @@ $(function() {
             .attr('height', svgHeight)
             .attr('width', svgWidth)    
         
-            d3.select('svg')
+            d3.select('#mainStats')
             .selectAll('rect')
             .data(playerStats)
             .enter()
@@ -280,38 +248,31 @@ $(function() {
         })
             
             //TEXT LABELS
-            d3.select('svg')
-            
-            .selectAll('text')
-            .data(playerStats)
-            .enter()
-            .append('text')
-            
-            
-            .attr('fill', 'white')
-            .html(function(d,i){
-                 
-                return d.name.charAt(0).toUpperCase() + d.name.slice(1);
-            })
-            .attr('x', (function(d,i) {
-                
-                var textwidth = $(this).width()
-            return (i*180 + 55) + 75 -textwidth/2
-        }))            
-            .attr('y', function(d,i) {
-                var topPos = (svgHeight - (d.stats.wins/d.stats.losses*100))
-                var temp = svgHeight - topPos;
-                var temp = temp/2
-                return topPos + temp
-            })
-            
-            
+            setTimeout(function() {
+                d3.select('#mainStats')
 
+                .selectAll('text')
+                .data(playerStats)
+                .enter()
+                .append('text')
+
+
+                .attr('fill', 'white')
+                .attr('class', 'userLabel')
+                .attr('font-size', 24)
+                .html(function(d,i){
+                    return d.name.charAt(0).toUpperCase() + d.name.slice(1);
+                })
+                .attr('x', (function(d,i) {
+                    var textwidth = $(this).width()
+                    return (i*180 + 55) + 75 -textwidth/2
+                }))            
+                .attr('y', function(d,i) {
+                    var topPos = (svgHeight - (d.stats.wins/d.stats.losses*100))
+                    var temp = svgHeight - topPos;
+                    var temp = temp/2
+                    return topPos + temp
+                })
+            },1000)
     }
-
-
-
-
-
-
 });
