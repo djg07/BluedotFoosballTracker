@@ -196,30 +196,25 @@ $(function() {
         
         function OneVsOne() {
             var gameDetailsURL = 'side1=' + redPlayers[0] + '(red):' + redScore + '&side2='+ blackPlayers[0] + '(black):' + blackScore;
+            $.ajax({
+                url: "http://firestone.gyges.feralhosting.com/foosball/game?",
+                type: "POST",
+                data: gameDetailsURL,
+                success: function(data, textStatus, jqXHR) {
+                    console.log(data);
+                    console.log(textStatus);
+                    console.log(jqXHR);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
 
-        
-
-        $.ajax({
-            url: "http://firestone.gyges.feralhosting.com/foosball/game?",
-            type: "POST",
-            data: gameDetailsURL,
-            success: function(data, textStatus, jqXHR) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(jqXHR);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            }
-
-        })    
+            })
         }
         
         function TwoVsTwo() {
-            // " == %22
-            // & == %26
             var gameDetailsURL = 'side1=' + redPlayers[0] + '%28redO%29' +
                 '%2B' + redPlayers[1] + '%28redD%29:' + redScore + "&" +
                 
@@ -254,23 +249,25 @@ $(function() {
     //d3 visualization
     
     d3.drawViz = function() {
-//        var colorList = ['#FF0000', '#00CC00', '#0000FF', '#A30052']
-//        var colorList = ['#b3e2cd', '#fdcdac', '#cbd5e8', '#f4cae4']
-          var colorList = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3']
+        var maxScore = (function() {
+            var max = 0;
+            for (var x = 0; x < playerStats.length; x++) {
+                var winRate = playerStats[x].stats.wins/playerStats[x].stats.gamesPlayed;
+                max = winRate > max ? winRate : max;
 
+            }
+            return Number(max.toFixed(2)) * 100
+        })();
 
+        var colorList = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3']
         var svgWidth = 800;
         var svgHeight = 400;
-        //SDEA
-        //console.log(playerStats)
-       
-        
-        //////////
-        
-        
-        
-        
-        
+        var yScale = d3.scale.linear()
+            .domain([0, maxScore])
+            .range([0, svgHeight-50]);
+
+
+
         //MAIN CONTAINER
         d3.select('#statsContainer')
             .append('svg')
@@ -321,8 +318,9 @@ $(function() {
             .attr('class', 'bar')
             .attr('width', 150)
             .attr('height', function(d,i) {
-            
-            return d.stats.wins / d.stats.losses *100
+                //debugger;
+
+            return yScale(d.stats.wins / d.stats.gamesPlayed *100)
             
         })
             
@@ -342,14 +340,15 @@ $(function() {
             
             .ease('cubic-in-out')
             .attr('y', function(d,i) {
-            return svgHeight - (d.stats.wins/d.stats.losses*100)   
+
+            return svgHeight - yScale(d.stats.wins/d.stats.gamesPlayed*100)
         })
             
-            //TEXT LABELS
+            //TEXT LABELS -- NAME
             setTimeout(function() {
                 d3.select('#mainStats')
 
-                .selectAll('text')
+                .selectAll('.nameLabel')
                 .data(playerStats)
                 .enter()
                 .append('text')
@@ -358,6 +357,7 @@ $(function() {
                 .attr('fill', 'white')
                 .attr('class', 'userLabel')
                 .attr('font-size', 24)
+                .attr('class', 'nameLabel')
                 .html(function(d,i){
                     return d.name.charAt(0).toUpperCase() + d.name.slice(1);
                 })
@@ -366,11 +366,44 @@ $(function() {
                     return (i*180 + 55) + 75 -textwidth/2
                 }))            
                 .attr('y', function(d,i) {
-                    var topPos = (svgHeight - (d.stats.wins/d.stats.losses*100))
+                    var topPos = (svgHeight - yScale(d.stats.wins/d.stats.gamesPlayed*100))
                     var temp = svgHeight - topPos;
                     var temp = temp/2
                     return topPos + temp
                 })
             },2500)
+
+        //TEXT LABELS -- WIN RATE
+
+        setTimeout(function() {
+            d3.select('#mainStats')
+
+                .selectAll('.winRateLabel')
+                .data(playerStats)
+                .enter()
+                .append('text')
+
+
+                .attr('fill', 'white')
+                .attr('class', 'userLabel')
+                .attr('font-size', 24)
+                .attr('class', 'winRateLabel')
+                .html(function(d,i){
+                    //Number(max.toFixed(2)) * 100
+                    return Number((d.stats.wins/d.stats.gamesPlayed *100).toFixed(2)) + '%'
+                })
+                .attr('x', (function(d,i) {
+                    var textwidth = $(this).width()
+                    return (i*180 + 55) + 75 -textwidth/2
+                }))
+                .attr('y', function(d,i) {
+                    var topPos = (svgHeight - yScale(d.stats.wins/d.stats.gamesPlayed*100))
+                    var temp = svgHeight - topPos;
+                    var temp = temp/2
+                    return topPos + temp + $(this).width()/2
+                })
+        },2500)
+
+
     }
 });
