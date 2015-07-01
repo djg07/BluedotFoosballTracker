@@ -1,0 +1,52 @@
+/**
+ * Created by dtp on 6/17/2015.
+ */
+
+$font-openSans: 'Open Sans Condensed', sans-serif;
+$font-roboto: 'Roboto', sans-serif;
+
+
+h2 {
+    font-family:  $font-openSans;
+    font-weight: 700;
+    
+}
+
+button {
+    font-family: $font-roboto;
+    
+}
+
+input {
+    font-family: $font-roboto;
+
+
+
+
+}
+
+
+#controls {
+    text-align:center;
+    margin-top:10px;
+}
+
+.score {
+    text-align:center;
+}
+
+#statsContainer {
+    margin-top:10px;
+    height:500px;
+    background-color:lightsteelblue;
+    text-align:center;
+}
+
+.form-group {
+    font-family:  $font-roboto;
+}
+
+.userLabel {
+    font-family:  $font-roboto;
+}
+

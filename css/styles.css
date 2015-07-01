@@ -1,47 +1,33 @@
 /**
  * Created by dtp on 6/17/2015.
  */
-
-
 h2 {
-    font-family:  'Open Sans Condensed', sans-serif;
-    font-weight: 700
-    
-}
+  font-family: "Open Sans Condensed", sans-serif;
+  font-weight: 700; }
 
 button {
-    font-family: 'Roboto', sans-serif;
-    
-}
+  font-family: "Roboto", sans-serif; }
 
 input {
-    font-family: 'Roboto', sans-serif;
-    
-}
-
-
+  font-family: "Roboto", sans-serif; }
 
 #controls {
-    text-align:center;
-    margin-top:10px;
-}
+  text-align: center;
+  margin-top: 10px; }
 
 .score {
-    text-align:center;
-}
+  text-align: center; }
 
 #statsContainer {
-    margin-top:10px;
-    height:500px;
-    background-color:lightsteelblue;
-    text-align:center;
-}
+  margin-top: 10px;
+  height: 500px;
+  background-color: lightsteelblue;
+  text-align: center; }
 
 .form-group {
-    font-family:  'Roboto', sans-serif;
-}
+  font-family: "Roboto", sans-serif; }
 
 .userLabel {
-    font-family:  'Roboto', sans-serif;
-}
+  font-family: "Roboto", sans-serif; }
 
+/*# sourceMappingURL=styles.css.map */
