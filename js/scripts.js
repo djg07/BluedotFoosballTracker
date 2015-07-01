@@ -154,9 +154,7 @@ $(function() {
     
         
     $('#reset').click(function() {
-        resetPlayers();
-        resetScore();
-        resetStats()
+        resetAll();
 
     })
 
@@ -179,14 +177,12 @@ $(function() {
         }
         
         if ((blackPlayers.length == 1) && (redPlayers.length == 1)) {
-            alert('1vs1');
-            return;
             OneVsOne();
         } 
         if ((blackPlayers.length == 2) && (redPlayers.length == 2)){
-            alert('2vs2')
             TwoVsTwo()
-        } else {
+        }
+        else {
             alert(failMsg);
             return;
         }
@@ -201,11 +197,14 @@ $(function() {
                 type: "POST",
                 data: gameDetailsURL,
                 success: function(data, textStatus, jqXHR) {
+                    alert('Game Recorded!')
+                    resetAll();
                     console.log(data);
                     console.log(textStatus);
                     console.log(jqXHR);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
+                    alert('Submit Failed. Check your connection.')
                     console.log(jqXHR);
                     console.log(textStatus);
                     console.log(errorThrown);
@@ -228,20 +227,19 @@ $(function() {
             type: "POST",
             data: gameDetailsURL,
             success: function(data, textStatus, jqXHR) {
+                alert('Game Recorded!')
                 console.log(data);
                 console.log(textStatus);
                 console.log(jqXHR);
             },
             error: function(jqXHR, textStatus, errorThrown) {
+                alert('Submit Failed. Check your connection.')
                 console.log(jqXHR);
                 console.log(textStatus);
                 console.log(errorThrown);
             }
 
         })
-            
-            
-            
         }
         
     })
