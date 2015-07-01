@@ -92,7 +92,7 @@ $(function() {
     function resetAll() {
         resetPlayers();
         resetScore();
-        resetStats;
+        resetStats();
     }
 
     function getRedPlayers() {
