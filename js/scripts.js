@@ -182,11 +182,11 @@ $(function() {
         if ((blackPlayers.length == 2) && (redPlayers.length == 2)){
             TwoVsTwo()
         }
-        else {
-            alert(failMsg);
-            return;
-        }
-        
+        //else {
+        //    alert(failMsg);
+        //    return;
+        //}
+
         
         
         
